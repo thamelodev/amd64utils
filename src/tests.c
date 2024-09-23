@@ -1,6 +1,6 @@
 
 #include <ntddk.h>
-#include "utils/amd64.h"
+#include "amd64utils/amd64.h"
 
 NTSTATUS DriverUnload()
 {
@@ -13,7 +13,6 @@ void DoTests()
 
 	SegmentDescriptor.Value = 0x00209b0000000000;
 
-	// Now you can access individual fields as well
 	DbgPrint("LowPart.Value: 0x%08X\n", SegmentDescriptor.Fields.LowPart.Value);
 	DbgPrint("HighPart.Value: 0x%08X\n", SegmentDescriptor.Fields.HighPart.Value);
 }

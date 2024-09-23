@@ -111,16 +111,17 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.c" />
-    <ClCompile Include="src\utils\amd64.c" />
+    <ClCompile Include="src\amd64utils\amd64.c" />
+    <ClCompile Include="src\tests.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\utils\amd64.h" />
+    <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="src\utils\req_asm.asm">
-      <FileType>Document</FileType>
-    </MASM>
+    <ClInclude Include="src\amd64utils\amd64.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="src\amd64utils\req_asm.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

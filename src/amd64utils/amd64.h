@@ -27,12 +27,9 @@ typedef union _AMD64_SegSelector
 	} b;
 } AMD64_SegSelector, * AMD64_PSegSelector;
 
-
 /*
 * Segment Descriptor (Without System Part)
 */
-
-// TODO: Create enums for some of the internal fields like type and NonSystem (S-Flag)
 #pragma pack(1)
 typedef struct _AMD64_SegDescriptor
 {
