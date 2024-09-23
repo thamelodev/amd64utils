@@ -1,0 +1,7 @@
+.code
+
+INTERN_GETGDTR PROC
+	sgdt QWORD PTR [rcx]
+	ret
+INTERN_GETGDTR ENDP
+end
