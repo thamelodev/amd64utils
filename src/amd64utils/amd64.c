@@ -5,8 +5,14 @@
 */
 
 extern INTERN_GETGDTR(AMD64_PGDTR CurrentGDTROUT);
+extern INTERN_GETLDTR(AMD64_PSegSelector CurrentLDTROUT);
 
 void AMD64_GetGDTR(AMD64_PGDTR CurrentGDTR)
 {
 	INTERN_GETGDTR(CurrentGDTR);
+}
+
+void AMD64_GetLDTR(AMD64_PSegSelector CurrentLDTR)
+{
+	INTERN_GETLDTR(CurrentLDTR);
 }

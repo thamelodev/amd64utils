@@ -69,6 +69,9 @@ typedef struct _AMD64_SegDescriptor
 * @param {AMD64_PGDTR} CurrentGDTR - Pointer to the output that will contain the current GDTR structure
 */
 void AMD64_GetGDTR(AMD64_PGDTR CurrentGDTR);
+void AMD64_GetLDTR(AMD64_PSegSelector CurrentLDTR);
+
+// TODO: Create a function to parse the entire GDT, recommended way: One iterator over the GDT
 
 
 #endif // _UTILS_AMD64_H_

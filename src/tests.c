@@ -9,6 +9,14 @@ NTSTATUS DriverUnload()
 
 void DoTests()
 {
+	AMD64_GDTR CurrentGDTR = { 0 };
+	AMD64_SegSelector CurrentLDTR = { 0 };
+
+	AMD64_GetGDTR(&CurrentGDTR);
+	AMD64_GetLDTR(&CurrentLDTR);
+
+	DbgPrint("GDTR Base: 0x%llx, LDT Index: 0x%hx", CurrentGDTR.Base, CurrentLDTR.b.Index);
+
 	AMD64_SegDescriptor SegmentDescriptor = { 0 };
 
 	SegmentDescriptor.Value = 0x00209b0000000000;
