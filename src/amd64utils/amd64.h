@@ -13,16 +13,16 @@
 * GDTR structure
 */
 #pragma pack(1)
-typedef struct _AMD64_GDTR
+typedef struct _AMD64_GDTRegister
 {
 	uint16_t Limit;
 	uint64_t Base;
-} AMD64_GDTR, * AMD64_PGDTR;
+} AMD64_GDTRegister, * AMD64_PGDTRegister;
 
 /*
 * Segment Selector structure
 */
-typedef union _AMD64_SegSelector
+typedef union _AMD64_SegmentSelector
 {
 	uint16_t Value;
 	struct
@@ -31,13 +31,13 @@ typedef union _AMD64_SegSelector
 		uint16_t TableIndicator : 1;
 		uint16_t Index : 13;
 	} Fields;
-} AMD64_SegSelector, * AMD64_PSegSelector;
+} AMD64_SegmentSelector, * AMD64_PSegmentSelector;
 
 /*
 * Segment Descriptor
 */
 #pragma pack(1)
-typedef struct _AMD64_SegDescriptor
+typedef struct _AMD64_SegmentDescriptor
 {
 	union {
 		uint64_t Value;
@@ -68,16 +68,16 @@ typedef struct _AMD64_SegDescriptor
 			} HighPart;
 		} Fields;
 	};
-} AMD64_SegDescriptor, * AMD64_PSegDescriptor;
+} AMD64_SegmentDescriptor, * AMD64_PSegmentDescriptor;
 
 /*
 * Interrupt Descriptor
 */
 #pragma pack(1)
-typedef struct _AMD64_IDTDescriptor
+typedef struct _AMD64_InterruptDescriptor
 {
 	uint16_t OffsetLow;
-	AMD64_SegSelector SegmentSelector;
+	AMD64_SegmentSelector SegmentSelector;
 	union
 	{
 		uint32_t Value;
@@ -96,12 +96,12 @@ typedef struct _AMD64_IDTDescriptor
 	} Middle;
 	uint32_t OffsetHigh;
 	uint32_t Reserved;
-} AMD64_IDTDescriptor, * AMD64_PIDTDescriptor;
+} AMD64_InterruptDescriptor, * AMD64_PInterruptDescriptor;
 
 /*
-* TSS/LDT Descriptor
+* TSS Descriptor
 */
-typedef struct _AMD64_TSSLDTDescriptor
+typedef struct _AMD64_TSSDescriptor
 {
 	union
 	{
@@ -132,13 +132,18 @@ typedef struct _AMD64_TSSLDTDescriptor
 	} Middle;
 	uint32_t BaseHigh;
 	uint32_t Reserved;
-} AMD64_TSSLDTDescriptor, * AMD64_PTSSLDTDescriptor;
+} AMD64_TSSDescriptor, * AMD64_PTSSDescriptor;
+
+/*
+* Alias to TSS Descriptor, since LDT and TSS uses same descriptor
+*/
+#define AMD64_LDTDescriptor AMD64_TSSDescriptor
 
 /*
 * The structure correspondent to Task Segment
 */
 #pragma pack(1)
-typedef struct _AMD64_TSS
+typedef struct _AMD64_TaskStateSegment
 {
 	uint32_t __Reserved;
 	uint64_t Rsp0;
@@ -157,9 +162,9 @@ typedef struct _AMD64_TSS
 	uint32_t __Reserved4;
 	uint16_t __Reserved5;
 	uint16_t IoMapBaseAddress;
-} AMD64_TSS, *AMD64_PTSS;
+} AMD64_TaskStateSegment, * AMD64_PTaskStateSegment;
 
-typedef struct _AMD64_UTILS_GDTIterator
+typedef struct _AMD64_GDTIterator
 {
 	// The GDT Base Address
 	uint64_t BaseAddress;
@@ -178,47 +183,47 @@ typedef struct _AMD64_UTILS_GDTIterator
 
 	// The current segment iterator is point at
 	uint64_t CurrentDescriptor;
-} AMD64_UTILS_GDTIterator, *AMD64_UTILS_PGDTIterator;
+} AMD64_GDTIterator, * AMD64_PGDTIterator;
 
 /*
 * Gets the current GDTR
 * @param {AMD64_PGDTR} CurrentGDTR - Pointer to the output that will contain the current GDTR structure
 */
-void AMD64_GetGDTR(AMD64_PGDTR CurrentGDTR);
+void AMD64_GetGDTRegister(AMD64_PGDTRegister CurrentGDTR);
 
 /*
 * Gets the current LDTR
 * @param {AMD64_PSegSelector} CurrentLDTR - Pointer to the output that will contain the current segment selector that's in LDTR
 */
-void AMD64_GetLDTR(AMD64_PSegSelector CurrentLDTR);
+void AMD64_GetLDTRegister(AMD64_PSegmentSelector CurrentLDTR);
 
 /*
 * Gets the current Task Register
 * @param {AMD64_PSegSelector} CurrentTaskRegister - Pointer to the output that will contain the segment selector that TR is holding
 */
-void AMD64_GetTaskRegister(AMD64_PSegSelector CurrentTaskRegister);
+void AMD64_GetTaskRegister(AMD64_PSegmentSelector CurrentTaskRegister);
 
 
 /*
 * Initializes the GDT Iterator
 * @returns Returns 0 if failed to initialize the iterator
 */
-int AMD64_UTILS_GDTIteratorInit(AMD64_UTILS_PGDTIterator Iterator, AMD64_PGDTR GDTR);
+int AMD64_GDTIteratorInit(AMD64_PGDTIterator Iterator, AMD64_PGDTRegister GDTR);
 
 /*
 * Uses the iterator object to iterate over the Global Descriptor Table
 * @returns Returns 1 if the iterator it's not at the end yet
 */
-int AMD64_UTILS_GDTIteratorNext(AMD64_UTILS_PGDTIterator Iterator);
+int AMD64_GDTIteratorNext(AMD64_PGDTIterator Iterator);
 
 /*
 * Resets the GDT Iterator
 */
-void AMD64_UTILS_GDTIteratorReset(AMD64_UTILS_PGDTIterator Iterator);
+void AMD64_GDTIteratorReset(AMD64_PGDTIterator Iterator);
 
 /*
 * Gets the TSS Base address 
 */
-uint64_t AMD64_UTILS_GetTSSBaseAddress();
+uint64_t AMD64_GetTSSBaseAddress();
 
 #endif // _UTILS_AMD64_H_

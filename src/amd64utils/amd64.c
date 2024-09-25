@@ -3,26 +3,26 @@
 /*
  * x86-64 Masm Assembly Procedure will be below with the prefix INTERN_ (Internals)
 */
-extern INTERN_GETGDTR(AMD64_PGDTR CurrentGDTROUT);
-extern INTERN_GETLDTR(AMD64_PSegSelector CurrentLDTROUT);
-extern INTERN_GETTASKREGISTER(AMD64_PSegSelector CurrentLDTROUT);
+extern INTERN_GETGDTR(AMD64_PGDTRegister CurrentGDTROUT);
+extern INTERN_GETLDTR(AMD64_PSegmentSelector CurrentLDTROUT);
+extern INTERN_GETTASKREGISTER(AMD64_PSegmentSelector CurrentLDTROUT);
 
-void AMD64_GetGDTR(AMD64_PGDTR CurrentGDTR)
+void AMD64_GetGDTRegister(AMD64_PGDTRegister CurrentGDTR)
 {
 	INTERN_GETGDTR(CurrentGDTR);
 }
 
-void AMD64_GetLDTR(AMD64_PSegSelector CurrentLDTR)
+void AMD64_GetLDTRegister(AMD64_PSegmentSelector CurrentLDTR)
 {
 	INTERN_GETLDTR(CurrentLDTR);
 }
 
-void AMD64_GetTaskRegister(AMD64_PSegSelector CurrentTaskRegister)
+void AMD64_GetTaskRegister(AMD64_PSegmentSelector CurrentTaskRegister)
 {
 	INTERN_GETTASKREGISTER(CurrentTaskRegister);
 }
 
-int AMD64_UTILS_GDTIteratorNext(AMD64_UTILS_PGDTIterator Iterator)
+int AMD64_GDTIteratorNext(AMD64_PGDTIterator Iterator)
 {
 	// If invalid iterator provided returns 0
 	if (Iterator->BaseAddress <= 0 || Iterator->Limit <= 0)
@@ -36,7 +36,7 @@ int AMD64_UTILS_GDTIteratorNext(AMD64_UTILS_PGDTIterator Iterator)
 		return 0;
 	}
 
-	AMD64_PSegDescriptor Descriptor = (AMD64_PSegDescriptor) (Iterator->BaseAddress + Iterator->CurrentOffset);
+	AMD64_PSegmentDescriptor Descriptor = (AMD64_PSegmentDescriptor) (Iterator->BaseAddress + Iterator->CurrentOffset);
 
 
 	int NonSystem = Descriptor->Fields.HighPart.b.NonSystem;
@@ -70,7 +70,7 @@ int AMD64_UTILS_GDTIteratorNext(AMD64_UTILS_PGDTIterator Iterator)
 	return 1;
 }
 
-void AMD64_UTILS_GDTIteratorReset(AMD64_UTILS_PGDTIterator Iterator)
+void AMD64_GDTIteratorReset(AMD64_PGDTIterator Iterator)
 {
 	Iterator->CurrentOffset = 0;
 	Iterator->CurrentOffset = 0;
@@ -78,10 +78,10 @@ void AMD64_UTILS_GDTIteratorReset(AMD64_UTILS_PGDTIterator Iterator)
 	Iterator->CurrentSegmentType = 0;
 }
 
-uint64_t AMD64_UTILS_GetTSSBaseAddress()
+uint64_t AMD64_GetTSSBaseAddress()
 {
-	AMD64_SegSelector TaskRegister = { 0 };
-	AMD64_GDTR GDTR = { 0 };
+	AMD64_SegmentSelector TaskRegister = { 0 };
+	AMD64_GDTRegister GDTR = { 0 };
 
 	AMD64_GetTaskRegister(&TaskRegister);
 
@@ -91,7 +91,7 @@ uint64_t AMD64_UTILS_GetTSSBaseAddress()
 		return 0;
 	}
 
-	AMD64_GetGDTR(&GDTR);
+	AMD64_GetGDTRegister(&GDTR);
 
 	// Ensuring GDTR is not invalid
 	if (GDTR.Base == 0)
@@ -100,7 +100,7 @@ uint64_t AMD64_UTILS_GetTSSBaseAddress()
 	}
 	
 	// The TSS descriptor in GDT would be TR->Index * 8 + GDTR->Base
-	AMD64_PTSSLDTDescriptor TssDescriptor = (TaskRegister.Fields.Index * 8) + GDTR.Base;
+	AMD64_PTSSDescriptor TssDescriptor = (TaskRegister.Fields.Index * 8) + GDTR.Base;
 
 	// Ensuring the TSS Descriptor is not invalid
 	if (TssDescriptor == NULL 
@@ -123,7 +123,7 @@ uint64_t AMD64_UTILS_GetTSSBaseAddress()
 }
 
 
-int AMD64_UTILS_GDTIteratorInit(AMD64_UTILS_PGDTIterator Iterator, AMD64_PGDTR GDTR)
+int AMD64_GDTIteratorInit(AMD64_PGDTIterator Iterator, AMD64_PGDTRegister GDTR)
 {
 	// Invalid GDTR provided
 	if (GDTR->Base <= 0 || GDTR->Limit <= 0)
