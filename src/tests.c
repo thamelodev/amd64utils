@@ -44,7 +44,7 @@ void DoTests()
 	DbgPrint("Tss Base Address at: 0x%llx I/O Base Map: 0x%hhx Rsp0: 0x%llx\n", 
 		(uint64_t) Tss,
 		Tss->IoMapBaseAddress,
-		Tss->Rsp0.Value
+		Tss->Rsp0
 	);
 
 	// 5 - Testing GDT Iterator Utils

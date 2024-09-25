@@ -155,21 +155,22 @@ typedef union __INTERNAL_AMD64_QuadOffset
 #pragma pack(1)
 typedef struct _AMD64_TSS
 {
-	_INTERNAL_AMD64_QuadOffset Rsp0;
-	_INTERNAL_AMD64_QuadOffset Rsp1;
-	_INTERNAL_AMD64_QuadOffset Rsp2;
-	uint32_t __Reserved0;
+	uint32_t __Reserved;
+	uint64_t Rsp0;
+	uint64_t Rsp1;
+	uint64_t Rsp2;
 	uint32_t __Reserved1;
-	_INTERNAL_AMD64_QuadOffset Ist1;
-	_INTERNAL_AMD64_QuadOffset Ist2;
-	_INTERNAL_AMD64_QuadOffset Ist3;
-	_INTERNAL_AMD64_QuadOffset Ist4;
-	_INTERNAL_AMD64_QuadOffset Ist5;
-	_INTERNAL_AMD64_QuadOffset Ist6;
-	_INTERNAL_AMD64_QuadOffset Ist7;	
 	uint32_t __Reserved2;
+	uint64_t Ist1;
+	uint64_t Ist2;
+	uint64_t Ist3;
+	uint64_t Ist4;
+	uint64_t Ist5;
+	uint64_t Ist6;
+	uint64_t Ist7;	
 	uint32_t __Reserved3;
-	uint16_t __Reserved4;
+	uint32_t __Reserved4;
+	uint16_t __Reserved5;
 	uint16_t IoMapBaseAddress;
 } AMD64_TSS, *AMD64_PTSS;
 
