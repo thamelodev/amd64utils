@@ -15,7 +15,7 @@ void DoTests()
 	AMD64_GetGDTR(&CurrentGDTR);
 	AMD64_GetLDTR(&CurrentLDTR);
 
-	DbgPrint("GDTR Base: 0x%llx, LDT Index: 0x%hx", CurrentGDTR.Base, CurrentLDTR.Fields.Index);
+	DbgPrint("GDTR Base: 0x%llx, LDT Index: 0x%hx\n", CurrentGDTR.Base, CurrentLDTR.Fields.Index);
 
 	AMD64_SegDescriptor SegmentDescriptor = { 0 };
 
@@ -35,21 +35,57 @@ void DoTests()
 
 	while (AMD64_UTILS_GDTIteratorNext(&Iterator))
 	{
-		// Debug Only
-		// DbgPrint("Overlaping: 0x%llx > 0x%llx\n", (Iterator.BaseAddress + Iterator.CurrentOffset), (Iterator.BaseAddress + Iterator.Limit));
+		AMD64_PSegDescriptor CurrentSegment = (AMD64_PSegDescriptor)Iterator.CurrentDescriptor;
 
-		// If TSS Found
-		if (!Iterator.CurrentSegmentIsNonSystem
-			&& Iterator.CurrentSegmentType == AMD64_TSS_AVAILABLE_TYPE
-			|| Iterator.CurrentSegmentType == AMD64_TSS_BUSY_TYPE)
+		// If the pointer is invalid, continue
+		if (CurrentSegment == NULL)
 		{
 			continue;
 		}
 
-		// Non-System Current Segment Descriptor
-		AMD64_PSegDescriptor CurrentSegment = (AMD64_PSegDescriptor) Iterator.CurrentDescriptor;
+		// If not present field, the descriptor is invalid/not present
+		if (!CurrentSegment->Fields.HighPart.b.Present)
+		{
+			DbgPrint("Current Address: 0x%llx Invalid Segment Descriptor! - Not present\n",
+				Iterator.CurrentDescriptor
+			);
 
-		DbgPrint("Non-System Segment - Segment Type: %d Non-System: %d\n", 
+			continue;
+		}
+
+		if (!Iterator.CurrentSegmentIsNonSystem)
+		{
+			if (Iterator.CurrentSegmentType == AMD64_TSS_AVAILABLE_TYPE 
+				|| Iterator.CurrentSegmentType == AMD64_TSS_BUSY_TYPE)
+			{
+				AMD64_PTSSLDTDescriptor TssDescriptor = (AMD64_PTSSLDTDescriptor)Iterator.CurrentDescriptor;
+
+				uint64_t TssBase = { 0 };
+				
+				// Doing the bit-fields concating to form the Tss Base Address
+				TssBase = TssDescriptor->Low.Fields.BaseLow;
+				TssBase |= (TssDescriptor->Middle.Fields.BaseLow2 << 16UL);
+				TssBase |= (TssDescriptor->Middle.Fields.BaseMiddle << 24UL);
+				TssBase |= ((uint64_t) TssDescriptor->BaseHigh << 32UL);
+
+				DbgPrint(
+					"[TSS64] - Segment Address: 0x%llx Non-System Segment "
+					"- Segment Type: %02hhx Non-System: %02hhx "
+					"TSS64 Available/Busy Base Address: 0x%llx\n",
+					Iterator.CurrentDescriptor,
+					Iterator.CurrentSegmentType, 
+					Iterator.CurrentSegmentIsNonSystem,
+					TssBase
+				);
+
+				continue;
+			}
+
+		}
+
+		// Print the Non-System Segment Data
+		DbgPrint("Segment Address: 0x%llx Non-System Segment - Segment Type: %02hhx Non-System: %02hhx\n",
+			Iterator.CurrentDescriptor,
 			Iterator.CurrentSegmentType, 
 			Iterator.CurrentSegmentIsNonSystem
 		);

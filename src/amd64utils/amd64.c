@@ -24,89 +24,44 @@ int AMD64_UTILS_GDTIteratorNext(AMD64_UTILS_PGDTIterator Iterator)
 		return 0;
 	}
 
-	// If the Iterator has been initializes but not called Next yet the CurrentOffset is -1
-	// Doing checks for ensuring the first entry of the GDT is valid (filled with zeroes)
-	if (Iterator->CurrentOffset == -1)
-	{
-		// Reading the first entry of the GDT
-		uint64_t DescriptorValue = *(uint64_t*)(Iterator->BaseAddress);
-
-		// If not zero or the Iterator is invalid or the GDT provided is wrong
-		if (DescriptorValue != 0)
-		{
-			return 0;
-		}
-
-		// Sets the current offset for the size of an Segment Descriptor to skip the first one
-		Iterator->CurrentOffset = sizeof(AMD64_SegDescriptor);
-
-		// Returns successs
-		return 1;
-	}
-
 	// If the next descriptor overlaps the GDT Limit this means we're at the end
-	if ((Iterator->BaseAddress + Iterator->CurrentOffset) > (Iterator->BaseAddress + Iterator->Limit))
+	if ((Iterator->BaseAddress + Iterator->CurrentOffset + 8) > (Iterator->BaseAddress + Iterator->Limit))
 	{
 		return 0;
 	}
 
+	AMD64_PSegDescriptor Descriptor = (AMD64_PSegDescriptor) (Iterator->BaseAddress + Iterator->CurrentOffset);
 
-	// Reading the segment using the current offset
-	AMD64_PSegDescriptor SegmentDescriptor = (AMD64_PSegDescriptor)(Iterator->BaseAddress + Iterator->CurrentOffset);
 
-	// TODO: Remove this and useless field because, I can check out-of the iterator if the P flag (Present) is true
-	if (SegmentDescriptor->Value == 0)
+	int NonSystem = Descriptor->Fields.HighPart.b.NonSystem;
+	int Present = Descriptor->Fields.HighPart.b.Present;
+	int Type = Descriptor->Fields.HighPart.b.Type;
+
+	Iterator->CurrentDescriptor = Iterator->BaseAddress + Iterator->CurrentOffset;
+
+	if (!Present)
 	{
-		Iterator->CurrentSegmentType = 0;
-		Iterator->CurrentSegmentIsNonSystem = 0;
-		Iterator->CurrentDescriptor = 0;
-
-		Iterator->CurrentOffset += sizeof(AMD64_SegDescriptor);
+		Iterator->CurrentOffset += 8;
+		Iterator->CurrentSegmentIsNonSystem = NonSystem;
+		Iterator->CurrentSegmentType = Type;
 
 		return 1;
 	}
 
-	// If the segment is a non-system one, will not need of special handling
-	if (SegmentDescriptor->Fields.HighPart.b.NonSystem)
+	if(!NonSystem)
 	{
-		// Set the iterator to hold the current segment type
-		Iterator->CurrentSegmentType = SegmentDescriptor->Fields.HighPart.b.Type;
-		Iterator->CurrentSegmentIsNonSystem = SegmentDescriptor->Fields.HighPart.b.NonSystem;
+		Iterator->CurrentOffset += 16;
+		Iterator->CurrentSegmentIsNonSystem = NonSystem;
+		Iterator->CurrentSegmentType = Type;
 
-		// Sets the iterator to point at the current segment
-		Iterator->CurrentDescriptor = Iterator->BaseAddress + Iterator->CurrentOffset;
-
-		// Offset increases itself by Segment Descriptor size
-		Iterator->CurrentOffset += sizeof(AMD64_SegDescriptor);
-
-		// Sucessfully read the segment
 		return 1;
 	}
-	
-	// It's system segment
-	if (!SegmentDescriptor->Fields.HighPart.b.NonSystem)
-	{
-		// Found TSS available/busy or LDT type
-		if (SegmentDescriptor->Fields.HighPart.b.Type == AMD64_TSS_AVAILABLE_TYPE 
-			|| SegmentDescriptor->Fields.HighPart.b.Type == AMD64_TSS_BUSY_TYPE
-			|| SegmentDescriptor->Fields.HighPart.b.Type == AMD64_LDT_TYPE)
-		{
-			// Set the iterator to hold the current segment type
-			Iterator->CurrentSegmentType = SegmentDescriptor->Fields.HighPart.b.Type;
-			Iterator->CurrentSegmentIsNonSystem = SegmentDescriptor->Fields.HighPart.b.NonSystem;
 
-			// Sets the iterator to point at the current segment
-			Iterator->CurrentDescriptor = Iterator->BaseAddress + Iterator->CurrentOffset;
+	Iterator->CurrentOffset += 8;
+	Iterator->CurrentSegmentIsNonSystem = NonSystem;
+	Iterator->CurrentSegmentType = Type;
 
-			// Offset increases itself by Segment Descriptor size
-			Iterator->CurrentOffset += sizeof(AMD64_TSSLDTDescriptor);
-
-			// Sucessfully read the segment
-			return 1;	
-		}
-	}
-
-	return 0;
+	return 1;
 }
 
 int AMD64_UTILS_GDTIteratorInit(AMD64_UTILS_PGDTIterator Iterator, AMD64_PGDTR GDTR)
@@ -119,7 +74,7 @@ int AMD64_UTILS_GDTIteratorInit(AMD64_UTILS_PGDTIterator Iterator, AMD64_PGDTR G
 
 	// Initializing the iterator
 	Iterator->BaseAddress = GDTR->Base;
-	Iterator->CurrentOffset = -1;
+	Iterator->CurrentOffset = 0;
 	Iterator->CurrentSegmentIsNonSystem = 0;
 	Iterator->CurrentSegmentType = 0;
 	Iterator->Limit = GDTR->Limit;
