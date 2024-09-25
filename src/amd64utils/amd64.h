@@ -135,21 +135,6 @@ typedef struct _AMD64_TSSLDTDescriptor
 } AMD64_TSSLDTDescriptor, * AMD64_PTSSLDTDescriptor;
 
 /*
-* This is internal in the library not for being used out of the library
-* This is the format that the AMD64 places 64-bit offsets, like in TSS with Lower and Upper;
-*/
-#pragma pack(1)
-typedef union __INTERNAL_AMD64_QuadOffset
-{
-	uint64_t Value;
-	struct
-	{
-		uint64_t Lower : 32;
-		uint64_t Upper : 32;
-	} Fields;
-} _INTERNAL_AMD64_QuadOffset;
-
-/*
 * The structure correspondent to Task Segment
 */
 #pragma pack(1)
