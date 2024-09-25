@@ -12,11 +12,13 @@ void DoTests()
 	AMD64_GDTR CurrentGDTR = { 0 };
 	AMD64_SegSelector CurrentLDTR = { 0 };
 
+	// 1 - Testing get LDTR and GDTR
 	AMD64_GetGDTR(&CurrentGDTR);
 	AMD64_GetLDTR(&CurrentLDTR);
 
 	DbgPrint("GDTR Base: 0x%llx, LDT Index: 0x%hx\n", CurrentGDTR.Base, CurrentLDTR.Fields.Index);
 
+	// 2 - Testing Segment Descriptor Structure
 	AMD64_SegDescriptor SegmentDescriptor = { 0 };
 
 	SegmentDescriptor.Value = 0x00209b0000000000;
@@ -25,6 +27,27 @@ void DoTests()
 	DbgPrint("HighPart.Value: 0x%08X\n", SegmentDescriptor.Fields.HighPart.Value);
 
 
+	// 3 - Testing Get Task Register
+	AMD64_SegSelector SegmentSelector = { 0 };
+	
+	AMD64_GetTaskRegister(&SegmentSelector);
+	
+	DbgPrint("Task Register - Index: 0x%hhx Rpl: %d Value: %hhx\n",
+		SegmentSelector.Fields.Index,
+		SegmentSelector.Fields.RequestPrivLevel,
+		SegmentSelector.Value
+	);
+
+	// 4 - Get TSS Address
+	AMD64_PTSS Tss = AMD64_UTILS_GetTSSBaseAddress();
+
+	DbgPrint("Tss Base Address at: 0x%llx I/O Base Map: 0x%hhx Rsp0: 0x%llx\n", 
+		(uint64_t) Tss,
+		Tss->IoMapBaseAddress,
+		Tss->Rsp0.Value
+	);
+
+	// 5 - Testing GDT Iterator Utils
 	AMD64_UTILS_GDTIterator Iterator = { 0 };
 
 	if (!AMD64_UTILS_GDTIteratorInit(&Iterator, &CurrentGDTR))

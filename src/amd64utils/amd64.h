@@ -206,12 +206,17 @@ void AMD64_GetGDTR(AMD64_PGDTR CurrentGDTR);
 */
 void AMD64_GetLDTR(AMD64_PSegSelector CurrentLDTR);
 
+/*
+* Gets the current Task Register
+* @param {AMD64_PSegSelector} CurrentTaskRegister - Pointer to the output that will contain the segment selector that TR is holding
+*/
+void AMD64_GetTaskRegister(AMD64_PSegSelector CurrentTaskRegister);
+
 
 /*
 * Initializes the GDT Iterator
 * @returns Returns 0 if failed to initialize the iterator
 */
-
 int AMD64_UTILS_GDTIteratorInit(AMD64_UTILS_PGDTIterator Iterator, AMD64_PGDTR GDTR);
 
 /*
@@ -219,5 +224,15 @@ int AMD64_UTILS_GDTIteratorInit(AMD64_UTILS_PGDTIterator Iterator, AMD64_PGDTR G
 * @returns Returns 1 if the iterator it's not at the end yet
 */
 int AMD64_UTILS_GDTIteratorNext(AMD64_UTILS_PGDTIterator Iterator);
+
+/*
+* Resets the GDT Iterator
+*/
+void AMD64_UTILS_GDTIteratorReset(AMD64_UTILS_PGDTIterator Iterator);
+
+/*
+* Gets the TSS Base address 
+*/
+uint64_t AMD64_UTILS_GetTSSBaseAddress();
 
 #endif // _UTILS_AMD64_H_
