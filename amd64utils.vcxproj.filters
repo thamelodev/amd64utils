@@ -12,10 +12,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\tests.c">
+    <ClCompile Include="src\tests.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\amd64utils\amd64.c">
+    <ClCompile Include="src\amd64utils\amd64.cpp">
       <Filter>src\amd64utils</Filter>
     </ClCompile>
   </ItemGroup>
@@ -24,7 +24,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\amd64utils\amd64.h">
+    <ClInclude Include="src\amd64utils\amd64.hpp">
       <Filter>src\amd64utils</Filter>
     </ClInclude>
   </ItemGroup>

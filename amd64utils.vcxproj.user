@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TestCertificate>
-    </TestCertificate>
+    <TestCertificate>CN="WDKTestCert julim,133718444950029183" | 8F9D21C5B355F73A4607AE74D766122A49A96D02</TestCertificate>
   </PropertyGroup>
 </Project>
