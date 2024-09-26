@@ -25,6 +25,16 @@ namespace Amd64::Paging
 	* @returns MAXLINADDR
 	*/
 	uint16_t GetMaxLinearAddress();
+
+	#pragma pack(1)
+	union PML4E
+	{
+		uint64_t Value;
+		struct
+		{
+
+		} Fields;
+	};
 }
 
 #endif
