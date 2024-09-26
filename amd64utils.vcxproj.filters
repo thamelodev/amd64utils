@@ -4,33 +4,42 @@
     <Inf Include="amd64utils.inf" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="src">
-      <UniqueIdentifier>{fa0cd855-5bf3-420b-b00c-2b5e825768f2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\amd64utils">
+    <Filter Include="amd64utils">
       <UniqueIdentifier>{3f86c53b-f332-4669-aa21-ef4089e47f44}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\tests.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\amd64utils\amd64.cpp">
-      <Filter>src\amd64utils</Filter>
-    </ClCompile>
+    <Filter Include="amd64utils\include">
+      <UniqueIdentifier>{63f68371-4ca8-4955-825e-db78ae3c6b8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="amd64utils\impl">
+      <UniqueIdentifier>{2677269f-9d9c-42a9-a8e1-8bfb2bf1c0e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\amd64utils\amd64.hpp">
-      <Filter>src\amd64utils</Filter>
-    </ClInclude>
+    <ClCompile Include="amd64utils\impl\segmentation.cpp">
+      <Filter>amd64utils\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="amd64utils\tests.cpp">
+      <Filter>amd64utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="src\amd64utils\req_asm.asm">
-      <Filter>src\amd64utils</Filter>
+    <MASM Include="amd64utils\impl\req_asm.asm">
+      <Filter>amd64utils\impl</Filter>
     </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="amd64utils\include\amd64.hpp">
+      <Filter>amd64utils\include</Filter>
+    </ClInclude>
+    <ClInclude Include="amd64utils\include\interrupts.hpp">
+      <Filter>amd64utils\include</Filter>
+    </ClInclude>
+    <ClInclude Include="amd64utils\include\segmentation.hpp">
+      <Filter>amd64utils\include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

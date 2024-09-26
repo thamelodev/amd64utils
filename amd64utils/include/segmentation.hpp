@@ -1,9 +1,9 @@
-#ifndef UTILS_AMD64_HPP
-#define UTILS_AMD64_HPP
+#ifndef _AMD64UTILS_SEGMENTATION_HPP_
+#define _AMD64UTILS_SEGMENTATION_HPP_
 
 #include <cstdint>
 
-namespace Amd64
+namespace Amd64::Segmentation
 {
     constexpr uint8_t INTERRUPT_GATE_TYPE = 14;
     constexpr uint8_t TRAP_GATE_TYPE = 15;
@@ -11,9 +11,6 @@ namespace Amd64
     constexpr uint8_t TSS_AVAILABLE_TYPE = 9;
     constexpr uint8_t LDT_TYPE = 2;
 
-    /**
-    * GDTR structure
-    */
     #pragma pack(1)
     struct GDTRegister
     {
@@ -21,9 +18,6 @@ namespace Amd64
         uint64_t Base;
     };
 
-    /*
-    * Segment Selector structure
-    */
     union SegmentSelector
     {
         uint16_t Value;
@@ -35,9 +29,6 @@ namespace Amd64
         } Fields;
     };
 
-    /*
-    * Segment Descriptor
-    */
     #pragma pack(1)
     struct SegmentDescriptor
     {
@@ -72,37 +63,7 @@ namespace Amd64
         };
     };
 
-    /*
-    * Interrupt Descriptor
-    */
     #pragma pack(1)
-    struct InterruptDescriptor
-    {
-        uint16_t OffsetLow;
-        SegmentSelector SegmentSelector;
-        union
-        {
-            uint32_t Value;
-            struct
-            {
-                uint32_t Ist : 3;
-                uint32_t Ign1 : 1;
-                uint32_t Ign2 : 1;
-                uint32_t Ign3 : 3;
-                uint32_t Type : 4;
-                uint32_t Ign4 : 1;
-                uint32_t DescriptorPrivLevel : 2;
-                uint32_t Present : 1;
-                uint32_t OffsetMiddle : 16;
-            } Fields;
-        } Middle;
-        uint32_t OffsetHigh;
-        uint32_t Reserved;
-    };
-
-    /*
-    * TSS Descriptor
-    */
     struct TSSDescriptor
     {
         union
@@ -136,14 +97,8 @@ namespace Amd64
         uint32_t Reserved;
     };
 
-    /*
-    * Alias to TSS Descriptor, since LDT and TSS use the same descriptor
-    */
     using LDTDescriptor = TSSDescriptor;
 
-    /*
-    * The structure corresponding to Task Segment
-    */
     #pragma pack(1)
     struct TaskStateSegment
     {
@@ -168,65 +123,22 @@ namespace Amd64
 
     struct GDTIterator
     {
-        // The GDT Base Address
         uint64_t BaseAddress;
-
-        // The current offset the iterator is pointing at
         uint32_t CurrentOffset;
-
-        // The GDT Limit (GDTR Low part)
         uint32_t Limit;
-
-        // The current segment type code iterator is pointing at
         uint8_t CurrentSegmentType;
-
-        // The current segment iterator is non-system
         uint8_t CurrentSegmentIsNonSystem;
-
-        // The current descriptor the iterator is pointing at
         uint64_t CurrentDescriptor;
     };
 
-    /*
-    * Gets the current GDTR
-    * @param {GDTRegister*} CurrentGDTR - Pointer to the output that will contain the current GDTR structure
-    */
     void GetGDTRegister(GDTRegister* CurrentGDTR);
-
-    /*
-    * Gets the current LDTR
-    * @param {SegmentSelector*} CurrentLDTR - Pointer to the output that will contain the current segment selector in LDTR
-    */
     void GetLDTRegister(SegmentSelector* CurrentLDTR);
-
-    /*
-    * Gets the current Task Register
-    * @param {SegmentSelector*} CurrentTaskRegister - Pointer to the output that will contain the segment selector that TR is holding
-    */
     void GetTaskRegister(SegmentSelector* CurrentTaskRegister);
-
-    /*
-    * Initializes the GDT Iterator
-    * @returns Returns 0 if failed to initialize the iterator
-    */
     int GDTIteratorInit(GDTIterator* Iterator, GDTRegister* GDTR);
-
-    /*
-    * Uses the iterator object to iterate over the Global Descriptor Table
-    * @returns Returns 1 if the iterator is not at the end yet
-    */
     int GDTIteratorNext(GDTIterator* Iterator);
-
-    /*
-    * Resets the GDT Iterator
-    */
     void GDTIteratorReset(GDTIterator* Iterator);
-
-    /*
-    * Gets the TSS Base address
-    */
     uint64_t GetTSSBaseAddress();
+}
 
-} // namespace AMD64
+#endif _AMD64UTILS_SEGMENTATION_HPP_
 
-#endif // UTILS_AMD64_HPP

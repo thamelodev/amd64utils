@@ -113,18 +113,20 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\amd64utils\amd64.cpp" />
-    <ClCompile Include="src\tests.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\amd64utils\amd64.hpp" />
+    <ClCompile Include="amd64utils\impl\segmentation.cpp" />
+    <ClCompile Include="amd64utils\tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="src\amd64utils\req_asm.asm" />
+    <MASM Include="amd64utils\impl\req_asm.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="amd64utils\include\amd64.hpp" />
+    <ClInclude Include="amd64utils\include\interrupts.hpp" />
+    <ClInclude Include="amd64utils\include\segmentation.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

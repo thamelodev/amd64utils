@@ -1,5 +1,5 @@
 #include <ntddk.h>
-#include "amd64utils/amd64.hpp"
+#include "include/amd64.hpp"
 
 NTSTATUS DriverUnload()
 {
@@ -12,12 +12,12 @@ void Test_TestingGetGDTRAndLDTR()
 {
 	DbgPrint(DBG_PREFIX "Test 1: Testing Get GDTR and LDTR\n");
 
-	Amd64::GDTRegister CurrentGDTR = { 0 };
-	Amd64::SegmentSelector CurrentLDTR = { 0 };
+	Amd64::Segmentation::GDTRegister CurrentGDTR = { 0 };
+	Amd64::Segmentation::SegmentSelector CurrentLDTR = { 0 };
 
 	// Get LDTR and GDTR
-	Amd64::GetGDTRegister(&CurrentGDTR);
-	Amd64::GetLDTRegister(&CurrentLDTR);
+	Amd64::Segmentation::GetGDTRegister(&CurrentGDTR);
+	Amd64::Segmentation::GetLDTRegister(&CurrentLDTR);
 
 	DbgPrint(DBG_PREFIX "GDTR Base: 0x%llx, LDT Index: 0x%hx\n", CurrentGDTR.Base, CurrentLDTR.Fields.Index);
 }
@@ -26,7 +26,7 @@ void Test_TestingSegmentDescriptorStructure()
 {
 	DbgPrint(DBG_PREFIX "Test 2: Testing Segment Descriptor Structure\n");
 
-	Amd64::SegmentDescriptor SegmentDescriptor = { 0 };
+	Amd64::Segmentation::SegmentDescriptor SegmentDescriptor = { 0 };
 
 	SegmentDescriptor.Value = 0x00209b0000000000;
 
@@ -38,9 +38,9 @@ void Test_TestingGetTaskRegister()
 {
 	DbgPrint(DBG_PREFIX "Test 3: Testing Get Task Register\n");
 
-	Amd64::SegmentSelector SegmentSelector = { 0 };
+	Amd64::Segmentation::SegmentSelector SegmentSelector = { 0 };
 
-	Amd64::GetTaskRegister(&SegmentSelector);
+	Amd64::Segmentation::GetTaskRegister(&SegmentSelector);
 
 	DbgPrint(DBG_PREFIX "Task Register - Index: 0x%hhx Rpl: %d Value: %hhx\n",
 		SegmentSelector.Fields.Index,
@@ -52,7 +52,7 @@ void Test_GetTSSAddress()
 {
 	DbgPrint(DBG_PREFIX "Test 4: Get TSS Base Address\n");
 
-	const auto Tss = reinterpret_cast<Amd64::TaskStateSegment*>(Amd64::GetTSSBaseAddress());
+	const auto Tss = reinterpret_cast<Amd64::Segmentation::TaskStateSegment*>(Amd64::Segmentation::GetTSSBaseAddress());
 
 	DbgPrint(DBG_PREFIX "Tss Base Address at: 0x%llx I/O Base Map: 0x%hhx Rsp0: 0x%llx\n",
 		(uint64_t)Tss,
@@ -64,20 +64,20 @@ void Test_TestingGDTIteratorUtils()
 {
 	DbgPrint(DBG_PREFIX "Test 5: Testing GDT Iterator Utils\n");
 
-	Amd64::GDTRegister CurrentGDTR = { 0 };
-	Amd64::GDTIterator Iterator = { 0 };
+	Amd64::Segmentation::GDTRegister CurrentGDTR = { 0 };
+	Amd64::Segmentation::GDTIterator Iterator = { 0 };
 
-	Amd64::GetGDTRegister(&CurrentGDTR);
+	Amd64::Segmentation::GetGDTRegister(&CurrentGDTR);
 
-	if (!Amd64::GDTIteratorInit(&Iterator, &CurrentGDTR))
+	if (!Amd64::Segmentation::GDTIteratorInit(&Iterator, &CurrentGDTR))
 	{
 		DbgPrint(DBG_PREFIX "Failed to initialize the GDT iterator!\n");
 		return;
 	}
 
-	while (Amd64::GDTIteratorNext(&Iterator))
+	while (Amd64::Segmentation::GDTIteratorNext(&Iterator))
 	{
-		const auto CurrentSegment = reinterpret_cast<Amd64::SegmentDescriptor*>(Iterator.CurrentDescriptor);
+		const auto CurrentSegment = reinterpret_cast<Amd64::Segmentation::SegmentDescriptor*>(Iterator.CurrentDescriptor);
 
 		// If the pointer is invalid, continue
 		if (CurrentSegment == nullptr)
@@ -95,10 +95,10 @@ void Test_TestingGDTIteratorUtils()
 
 		if (!Iterator.CurrentSegmentIsNonSystem)
 		{
-			if (Iterator.CurrentSegmentType == Amd64::TSS_AVAILABLE_TYPE
-				|| Iterator.CurrentSegmentType == Amd64::TSS_BUSY_TYPE)
+			if (Iterator.CurrentSegmentType == Amd64::Segmentation::TSS_AVAILABLE_TYPE
+				|| Iterator.CurrentSegmentType == Amd64::Segmentation::TSS_BUSY_TYPE)
 			{
-				const auto TssDescriptor = reinterpret_cast<Amd64::TSSDescriptor*>(Iterator.CurrentDescriptor);
+				const auto TssDescriptor = reinterpret_cast<Amd64::Segmentation::TSSDescriptor*>(Iterator.CurrentDescriptor);
 
 				uint64_t TssBase = 0;
 

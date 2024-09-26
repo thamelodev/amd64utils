@@ -1,6 +1,6 @@
-#include "amd64.hpp"
+#include "../include/amd64.hpp"
 
-namespace Amd64
+namespace Amd64::Segmentation
 {
     /*
      * x86-64 Masm Assembly Procedures with the prefix INTERN_ (Internals)
