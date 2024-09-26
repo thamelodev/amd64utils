@@ -25,6 +25,9 @@
     <ClCompile Include="amd64utils\tests.cpp">
       <Filter>amd64utils</Filter>
     </ClCompile>
+    <ClCompile Include="amd64utils\impl\paging.cpp">
+      <Filter>amd64utils\impl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="amd64utils\impl\req_asm.asm">
@@ -39,6 +42,12 @@
       <Filter>amd64utils\include</Filter>
     </ClInclude>
     <ClInclude Include="amd64utils\include\segmentation.hpp">
+      <Filter>amd64utils\include</Filter>
+    </ClInclude>
+    <ClInclude Include="amd64utils\include\paging.hpp">
+      <Filter>amd64utils\include</Filter>
+    </ClInclude>
+    <ClInclude Include="amd64utils\include\cpuid.hpp">
       <Filter>amd64utils\include</Filter>
     </ClInclude>
   </ItemGroup>

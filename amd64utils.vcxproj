@@ -117,6 +117,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="amd64utils\impl\paging.cpp" />
     <ClCompile Include="amd64utils\impl\segmentation.cpp" />
     <ClCompile Include="amd64utils\tests.cpp" />
   </ItemGroup>
@@ -125,7 +126,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="amd64utils\include\amd64.hpp" />
+    <ClInclude Include="amd64utils\include\cpuid.hpp" />
     <ClInclude Include="amd64utils\include\interrupts.hpp" />
+    <ClInclude Include="amd64utils\include\paging.hpp" />
     <ClInclude Include="amd64utils\include\segmentation.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

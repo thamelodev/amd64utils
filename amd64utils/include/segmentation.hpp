@@ -126,17 +126,17 @@ namespace Amd64::Segmentation
         uint64_t BaseAddress;
         uint32_t CurrentOffset;
         uint32_t Limit;
-        uint8_t CurrentSegmentType;
-        uint8_t CurrentSegmentIsNonSystem;
+        uint8_t  CurrentSegmentType;
+        uint8_t  CurrentSegmentIsNonSystem;
         uint64_t CurrentDescriptor;
     };
 
-    void GetGDTRegister(GDTRegister* CurrentGDTR);
-    void GetLDTRegister(SegmentSelector* CurrentLDTR);
-    void GetTaskRegister(SegmentSelector* CurrentTaskRegister);
-    int GDTIteratorInit(GDTIterator* Iterator, GDTRegister* GDTR);
-    int GDTIteratorNext(GDTIterator* Iterator);
-    void GDTIteratorReset(GDTIterator* Iterator);
+    void     GetGDTRegister(GDTRegister* CurrentGDTR);
+    void     GetLDTRegister(SegmentSelector* CurrentLDTR);
+    void     GetTaskRegister(SegmentSelector* CurrentTaskRegister);
+    int      GDTIteratorInit(GDTIterator* Iterator, GDTRegister* GDTR);
+    int      GDTIteratorNext(GDTIterator* Iterator);
+    void     GDTIteratorReset(GDTIterator* Iterator);
     uint64_t GetTSSBaseAddress();
 }
 
