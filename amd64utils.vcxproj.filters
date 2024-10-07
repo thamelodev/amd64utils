@@ -28,6 +28,9 @@
     <ClCompile Include="amd64utils\impl\paging.cpp">
       <Filter>amd64utils\impl</Filter>
     </ClCompile>
+    <ClCompile Include="amd64utils\impl\cpuid.cpp">
+      <Filter>amd64utils\impl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="amd64utils\impl\req_asm.asm">

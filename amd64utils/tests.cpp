@@ -126,6 +126,28 @@ void Test_TestingGDTIteratorUtils()
 	}
 }
 
+
+void Test_TestingCheckCPUIDRunning()
+{
+	DbgPrint(DBG_PREFIX "Test 6: Running CPUID instruction test\n");
+
+	Amd64::Cpuid::IdResult Result = { 0 };
+
+	// Executing the CPUID to identify processor info features
+	Amd64::Cpuid::Identify(
+		Amd64::Cpuid::LF1_VIRTUAL_PHYSICAL_ADDR_SIZES, 
+		0,
+		Result
+	);
+
+
+	DbgPrint("Result, EAX: %x, EBX: %x ECX: %x, EDX: %x\n",
+		Result.eax,
+		Result.ebx,
+		Result.ecx,
+		Result.edx);
+}
+
 void RunAllTests()
 {
 	// Test 1: Testing Get GDTR and LDTR
@@ -142,6 +164,9 @@ void RunAllTests()
 
 	// Test 5: Testing GDT Iterator Utils
 	Test_TestingGDTIteratorUtils();
+
+	// Test 6: CPUID
+	Test_TestingCheckCPUIDRunning();
 }
 
 extern "C"

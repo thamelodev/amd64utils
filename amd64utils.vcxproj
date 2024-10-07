@@ -117,6 +117,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="amd64utils\impl\cpuid.cpp" />
     <ClCompile Include="amd64utils\impl\paging.cpp" />
     <ClCompile Include="amd64utils\impl\segmentation.cpp" />
     <ClCompile Include="amd64utils\tests.cpp" />

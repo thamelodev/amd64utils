@@ -4,5 +4,6 @@
 #include "segmentation.hpp"
 #include "interrupts.hpp"
 #include "paging.hpp"
+#include "cpuid.hpp"
 
 #endif
