@@ -3,9 +3,12 @@
 
 #include <cstdint>
 #include <intrin.h>
+#include "cpuid.hpp"
 
 namespace Amd64::Paging
 {
+	uint64_t GetAddressMask(uint16_t MaxLinearAddress);
+
 	/*
 	* Translates one virtual address to a physical one
 	* @param DirectoryBase - The address of the first table, generally called DirBase in Windows (CR3)
