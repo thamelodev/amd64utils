@@ -26,6 +26,7 @@
     <Configuration>Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">x64</Platform>
     <RootNamespace>amd64utils</RootNamespace>
+    <WindowsTargetPlatformVersion>$(LatestTargetPlatformVersion)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -87,6 +88,7 @@
     </DriverSign>
     <ClCompile>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -111,18 +113,24 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\amd64utils\amd64.c" />
-    <ClCompile Include="src\tests.c" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\amd64utils\amd64.h" />
+    <ClCompile Include="amd64utils\impl\cpuid.cpp" />
+    <ClCompile Include="amd64utils\impl\paging.cpp" />
+    <ClCompile Include="amd64utils\impl\segmentation.cpp" />
+    <ClCompile Include="amd64utils\tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="src\amd64utils\req_asm.asm" />
+    <MASM Include="amd64utils\impl\req_asm.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="amd64utils\include\amd64.hpp" />
+    <ClInclude Include="amd64utils\include\cpuid.hpp" />
+    <ClInclude Include="amd64utils\include\interrupts.hpp" />
+    <ClInclude Include="amd64utils\include\paging.hpp" />
+    <ClInclude Include="amd64utils\include\segmentation.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
