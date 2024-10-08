@@ -1,5 +1,8 @@
 # amd64utils Library
 
+⚠️ TLDR: NOT FOR USE YET!
+
+
 This library is designed for handling x86-64 (amd64) structures and mechanisms. It focuses on tasks such as parsing Global Descriptor Tables (GDT) and walking page tables. 
 
 ## Features
